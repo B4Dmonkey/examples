@@ -60,6 +60,24 @@ app.put("/customer", (req, res) => {
   res.status(200).send("Successfully updated customer");
 });
 
+// Routes
+/**
+ * @swagger
+ * /examples:
+ *  get:
+ *    description: Use to request all examples
+ *    responses:
+ *      '200':
+ *        description: A successful response
+ */
+
+const example = async (req, res) => {
+  res.status(200).send("Example results");
+}
+
+app.get("/examples", example);
+
+
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
