@@ -62,6 +62,11 @@ app.put("/customer", (req, res) => {
 
 // Routes
 /**
+ * Some Example End point
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ * 
  * @swagger
  * /examples:
  *  get:
@@ -70,7 +75,6 @@ app.put("/customer", (req, res) => {
  *      '200':
  *        description: A successful response
  */
-
 const example = async (req, res) => {
   res.status(200).send("Example results");
 }
