@@ -1,5 +1,4 @@
 .DS_Store
-.problems/
 ProjectLucille/
 RecognizingObjectsInLiveCapture/
 SmartCameraLBTA/
@@ -12,6 +11,7 @@ misc.../
 vim_practice/
 vue/
 vuegg/
+svelteKit/
 
 .*/node_modules
 node_modules/
