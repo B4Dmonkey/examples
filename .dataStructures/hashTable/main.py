@@ -1,15 +1,26 @@
 from math import floor
+from pprint import pformat
 
 
 class Node:
-    def __init__(self, key, data):
+    def __init__(self, key, value):
         self.key = key
-        self.value = data
+        self.value = value
         self.next = None
 
     def __str__(self):
-        return f"Node: <key: { self.data }\tvalue: { self.value } next: { self.next }>"
-        # return f"Node: <data: { self.data }\tnext: Node({ self.next.data if self.next else None })>"
+        asString = f"\n"
+        nodes = self
+        while nodes:
+            key = f"\'{ nodes.key }\'\t\t\t"
+            value = f"{ nodes.value }\t\t\t"
+            nextNode = f"Node({ nodes.next.value if nodes.next else None })"
+
+            asString += f"{ key }{ value }{ nextNode }\n"
+
+            nodes = nodes.next
+
+        return asString
 
 
 # * This number is random from the example used online
@@ -25,6 +36,21 @@ class HashTable:
         self.capacity = INITIAL_CAPACITY
         self.size = 0
         self.buckets = [None] * self.capacity
+
+    def __str__(self):
+        dashCount = 20
+
+        tableRepr = f"\nTable Capacity:\t{ self.capacity}"
+        tableRepr += f"\nTable Size:\t{ self.size }"
+        tableRepr += f"\n"
+        tableRepr += "-"*dashCount
+        tableRepr += f"\nKEY\t\t\tVALUE\t\t\tNEXT"
+
+        for node in self.buckets:
+            if node:
+                tableRepr += str(node)
+
+        return tableRepr
 
     def hash(self, key):
         return self._hash(key)
@@ -78,8 +104,9 @@ class HashTable:
 
             self.buckets[index] = Node(key, value)
             return
-        # 4. Collision! Iterate to the end of the linked list at provided index
 
+        # 4. Collision! Iterate to the end of the linked list at provided index
+        # * This allows for duplicate keys which is a no go in hash tables
         prev = node
         while node is not None:
             prev = node
@@ -110,9 +137,40 @@ class HashTable:
 
             return node.value
 
+    def delete(self, key):
+        index = self.hash(key)
+        node = self.buckets[index]
 
+        if node is None:
+            return
+
+        if node.key == key:
+            node = node.next
+            self.buckets[index] = node
+            return
+
+        prev = node
+        while node and node.key != key:
+            prev = node
+            node = node.next
+
+        prev.next = node.next if node else None
+        self.buckets[index] = prev
+
+
+print()
 hashTable = HashTable()
+print(f"The empty hash table is:\n{ hashTable }\n")
+
 hashTable.insert('one', 1)
-# ! This won't work the key would have to be an iterable (str/list)
-# ! hashTable.insert(2, 'two')
-one = hashTable.search('one')
+print(f"One entry table is:\n{ hashTable }\n")
+
+# hashTable.insert('one', 2)
+# print(f"Two entry table is { hashTable }")
+# # ! This won't work the key would have to be an iterable (str/list)
+# # ! hashTable.insert(2, 'two')
+# one = hashTable.search('one')
+# print(f"searching for one: { one }")
+
+hashTable.delete('one')
+print(f"The table should be empty now:\n{ hashTable }")
