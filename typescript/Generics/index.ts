@@ -19,14 +19,14 @@ const updateToast = ({ toastRef }: { toastRef: MutableRefObject<Id> }) => {
 const toastRef = useRef<Id | null>(null);
 
 const notify = (message) => {
-  const isNull = (
+  const isNotNull = (
     ref: MutableRefObject<Id> | MutableRefObject<Id | null>
   ): ref is MutableRefObject<Id> =>
     typeof ref.current === "string" || typeof ref.current === "number";
   if (toastRef.current) {
     updateToast({ toastRef });
   }
-  if (isNull(toastRef)) {
+  if (isNotNull(toastRef)) {
     updateToast({ toastRef });
   }
 };
