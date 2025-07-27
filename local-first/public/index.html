@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Example Local First</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="">
+</head>
+
+<body>
+  <h1>Example local first site things</h1>
+  <div>
+    <input type="text" id="key" value="Jim">
+    <input type="text" id="value" value="{&quot;name&quot;: &quot;Jim&quot;, &quot;position&quot;: &quot;CEO&quot;}">
+    <input type="button" id="get" value="Get">
+    <input type="button" id="put" value="Put">
+  </div>
+  <a href="template.html">View Template</a>
+</body>
+
+<script>
+  let db;
+  const req = indexedDB.open("exampledb", 1);
+  req.addEventListener("upgradeneeded", function (ev) {
+    const db = req.result;
+    db.createObjectStore("employees", { keyPath: "name" });
+  });
+  req.addEventListener("success", function () {
+    db = req.result;
+    const keyEl = document.getElementById("key");
+    const valEl = document.getElementById("value");
+    document.getElementById("get").addEventListener("click", function (ev) {
+      valEl.value = localStorage.getItem(keyEl.value);
+      const tx = db.transaction(["employees"], "readonly");
+      const employeeTable = tx.objectStore("employees");
+      const getReq = employeeTable.get(keyEl.value);
+      getReq.addEventListener("success", function (ev) {
+        console.log('found jimbo:', getReq.result);
+        valEl.value = JSON.stringify(getReq.result);
+      });
+    });
+    document.getElementById("put").addEventListener("click", function (ev) {
+      const tx = db.transaction(["employees"], "readwrite");
+      const employeeTable = tx.objectStore("employees");
+      employeeTable.put(JSON.parse(valEl.value));
+    });
+  });
+</script>
+
+</html>
